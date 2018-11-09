@@ -1,7 +1,10 @@
 package com.example.hc;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.concurrent.atomic.AtomicLong;
 
+@EqualsAndHashCode(of = {"host", "port"})
 public class RealServer {
     public static final AtomicLong COUNTER = new AtomicLong(0);
     private final long mark = COUNTER.incrementAndGet();

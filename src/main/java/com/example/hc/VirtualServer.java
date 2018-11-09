@@ -1,7 +1,6 @@
 package com.example.hc;
 
 import org.apache.http.client.fluent.HcRequest;
-import org.apache.http.client.fluent.Request;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -112,11 +111,6 @@ public class VirtualServer {
     }
 
     public static void main(String[] args) throws IOException {
-        String s = Request
-                .Get("http://www.baidu.com")
-                .execute()
-                .returnContent()
-                .asString();
-        System.out.println(s);
+
     }
 }
