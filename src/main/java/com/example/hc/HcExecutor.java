@@ -16,10 +16,12 @@ import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.nio.reactor.IOReactorException;
 
 import java.nio.charset.CodingErrorAction;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class HcExecutor {
     public static final CloseableHttpAsyncClient HTTP_ASYNC_CLIENT = custom();
-
+    public static final ExecutorService EXECUTOR_SERVICE= Executors.newFixedThreadPool(4);
     public static CloseableHttpAsyncClient custom() {
         NHttpConnectionFactory<ManagedNHttpClientConnection> connFactory = new ManagedNHttpClientConnectionFactory();
 
