@@ -7,28 +7,8 @@
     <groupId>com.example</groupId>
     <artifactId>hc</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <properties>
-        <jackson.version>2.9.7</jackson.version>
-        <jackson.version.annotations>2.9.0</jackson.version.annotations>
-        <jackson.version.core>${jackson.version}</jackson.version.core>
-        <jackson.version.databind>${jackson.version}</jackson.version.databind>
-    </properties>
+
     <dependencies>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version.annotations}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version.core}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version.databind}</version>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
