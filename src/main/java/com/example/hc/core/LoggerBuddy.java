@@ -7,23 +7,26 @@ import com.example.hc.impl.SimpleDiscoverClient;
 import org.slf4j.Logger;
 
 public class LoggerBuddy {
-    public static final LoggerContext LOGGER_CONTEXT = new LoggerContext();
+    public static final LoggerContext LOGGER_CONTEXT = createFromClasspathResource();
     public static final String CONFIG_NAME = "hc.xml";
 
     public static Logger of(Class<?> clazz) {
         return LOGGER_CONTEXT.getLogger(clazz);
     }
 
-    static {
+
+    private static LoggerContext createFromClasspathResource() {
+        LoggerContext context = new LoggerContext();
         try {
             JoranConfigurator configurator = new JoranConfigurator();
-            LOGGER_CONTEXT.reset();
-            configurator.setContext(LOGGER_CONTEXT);
+
+            configurator.setContext(context);
             configurator.doConfigure(SimpleDiscoverClient.class
                     .getClassLoader()
                     .getResourceAsStream(CONFIG_NAME));
         } catch (JoranException je) {
 
         }
+        return context;
     }
 }
