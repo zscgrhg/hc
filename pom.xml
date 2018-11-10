@@ -60,7 +60,6 @@
                     <transformers>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
-
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
                             <addHeader>false</addHeader>
@@ -71,11 +70,11 @@
                     <relocations>
                         <relocation>
                             <pattern>org.apache</pattern>
-                            <shadedPattern>example.org.apache</shadedPattern>
+                            <shadedPattern>shade.org.apache</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.fasterxml</pattern>
-                            <shadedPattern>example.com.fasterxml</shadedPattern>
+                            <shadedPattern>shade.com.fasterxml</shadedPattern>
                         </relocation>
                     </relocations>
                     <artifactSet>
