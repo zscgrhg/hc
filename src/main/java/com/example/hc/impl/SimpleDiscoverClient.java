@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SimpleDiscoverClient implements DiscoveryClient {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(SimpleDiscoverClient.class);
+    final static Logger LOGGER = LoggerBuddy.of(SimpleDiscoverClient.class);
 
     public List<RealServer> seek(String name) {
         return null;
