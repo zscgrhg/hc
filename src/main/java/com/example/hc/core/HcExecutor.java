@@ -1,4 +1,4 @@
-package com.example.hc;
+package com.example.hc.core;
 
 import org.apache.http.Consts;
 import org.apache.http.client.config.CookieSpecs;

@@ -1,4 +1,4 @@
-package com.example.hc;
+package com.example.hc.core;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.concurrent.FutureCallback;

@@ -1,4 +1,4 @@
-package com.example.hc;
+package com.example.hc.core;
 
 import java.util.List;
 

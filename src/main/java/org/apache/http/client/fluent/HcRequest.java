@@ -1,9 +1,8 @@
 package org.apache.http.client.fluent;
 
-import com.example.hc.HcExecutor;
-import com.example.hc.HcListener;
-import com.example.hc.HcListenerChain;
-import com.example.hc.SyncHcListener;
+import com.example.hc.core.HcExecutor;
+import com.example.hc.core.HcListenerChain;
+import com.example.hc.core.SyncHcListener;
 import org.apache.http.*;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.entity.ContentType;
