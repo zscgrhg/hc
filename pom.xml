@@ -7,8 +7,28 @@
     <groupId>com.example</groupId>
     <artifactId>hc</artifactId>
     <version>1.0-SNAPSHOT</version>
-
+    <properties>
+        <jackson.version>2.9.7</jackson.version>
+        <jackson.version.annotations>2.9.0</jackson.version.annotations>
+        <jackson.version.core>${jackson.version}</jackson.version.core>
+        <jackson.version.databind>${jackson.version}</jackson.version.databind>
+    </properties>
     <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version.annotations}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version.databind}</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -38,16 +58,24 @@
                 <version>3.2.0</version>
                 <configuration>
                     <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer">
-                        </transformer>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
+
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
                             <addHeader>false</addHeader>
                         </transformer>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                     </transformers>
                     <relocations>
                         <relocation>
                             <pattern>org.apache</pattern>
-                            <shadedPattern>com.example.org.apache</shadedPattern>
+                            <shadedPattern>example.org.apache</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.fasterxml</pattern>
+                            <shadedPattern>example.com.fasterxml</shadedPattern>
                         </relocation>
                     </relocations>
                     <artifactSet>
