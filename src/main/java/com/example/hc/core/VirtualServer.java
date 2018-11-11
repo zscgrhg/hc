@@ -1,6 +1,5 @@
 package com.example.hc.core;
 
-import lombok.Builder;
 import org.apache.http.client.fluent.HcRequest;
 
 import java.io.IOException;
@@ -15,14 +14,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@Builder
-public class VirtualServer {
-    private String name;
-    private DiscoveryClient discoveryClient;
-    private LoadBlancer loadBlancer;
-    @Builder.Default
-    private List<RealServer> realRealServers= Collections.emptyList();
 
+public class VirtualServer {
+    private final String name;
+    private final DiscoveryClient discoveryClient;
+    private final LoadBlancer loadBlancer;
+    private final HacExecutor hacExecutor;
+
+    private volatile List<RealServer> realRealServers = Collections.emptyList();
+
+    public VirtualServer(String name, DiscoveryClient discoveryClient, LoadBlancer loadBlancer, HacExecutor hacExecutor) {
+        this.name = name;
+        this.discoveryClient = discoveryClient;
+        this.loadBlancer = loadBlancer;
+        this.hacExecutor = hacExecutor;
+    }
 
     public void initRealServers() {
         refreshRealServers();
@@ -106,11 +112,11 @@ public class VirtualServer {
         }
 
         public HcRequest Get() {
-            return HcRequest.Get(expand());
+            return HcRequest.Get(hacExecutor, expand());
         }
 
         public HcRequest Post() {
-            return HcRequest.Post(expand());
+            return HcRequest.Post(hacExecutor, expand());
         }
     }
 

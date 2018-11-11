@@ -1,7 +1,7 @@
 package org.apache.http.client.fluent;
 
-import com.example.hc.core.HcExecutor;
-import com.example.hc.core.HcListenerChain;
+import com.example.hc.core.HacExecutor;
+import com.example.hc.core.HcListener;
 import com.example.hc.core.LoggerBuddy;
 import com.example.hc.core.SyncHcListener;
 import org.apache.http.*;
@@ -13,41 +13,48 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 public class HcRequest extends Request {
     final static Logger LOGGER = LoggerBuddy.of(HcRequest.class);
     private final InternalHttpRequest internalHttpRequest;
     private final HcListenerChain chain = new HcListenerChain();
+    private final HacExecutor hacExecutor;
 
-    HcRequest(InternalHttpRequest request) {
+    HcRequest(HacExecutor hacExecutor, InternalHttpRequest request) {
         super(request);
+        this.hacExecutor = hacExecutor;
         this.internalHttpRequest = request;
     }
 
-    public static HcRequest Get(URI uri) {
-        return new HcRequest(new InternalHttpRequest("GET", uri));
+    public static HcRequest Get(HacExecutor hacExecutor, URI uri) {
+        return new HcRequest(hacExecutor, new InternalHttpRequest("GET", uri));
     }
 
-    public static HcRequest Get(String uri) {
-        return new HcRequest(new InternalHttpRequest("GET", URI.create(uri)));
+    public static HcRequest Get(HacExecutor hacExecutor, String uri) {
+        return new HcRequest(hacExecutor, new InternalHttpRequest("GET", URI.create(uri)));
     }
 
 
-    public static HcRequest Post(URI uri) {
-        return new HcRequest(new InternalEntityEnclosingHttpRequest("POST", uri));
+    public static HcRequest Post(HacExecutor hacExecutor, URI uri) {
+        return new HcRequest(hacExecutor, new InternalEntityEnclosingHttpRequest("POST", uri));
     }
 
-    public static HcRequest Post(String uri) {
-        return new HcRequest(new InternalEntityEnclosingHttpRequest("POST", URI.create(uri)));
+    public static HcRequest Post(HacExecutor hacExecutor, String uri) {
+        return new HcRequest(hacExecutor, new InternalEntityEnclosingHttpRequest("POST", URI.create(uri)));
     }
 
     public Future<HttpResponse> aexec() {
         LOGGER.debug(internalHttpRequest
                 .getURI()
                 .toString());
-        Future<HttpResponse> execute = HcExecutor.HTTP_ASYNC_CLIENT.execute(internalHttpRequest, chain);
+        Future<HttpResponse> execute = hacExecutor
+                .getHac()
+                .execute(internalHttpRequest, chain);
         return execute;
     }
 
@@ -58,6 +65,12 @@ public class HcRequest extends Request {
             chain.addAsync(listener);
         }
         return this;
+    }
+
+    public void call(Runnable runnable) {
+        hacExecutor
+                .getEXECUTOR_SERVICE()
+                .execute(runnable);
     }
 
     @Override
@@ -262,5 +275,66 @@ public class HcRequest extends Request {
     public HcRequest bodyStream(InputStream instream, ContentType contentType) {
         super.bodyStream(instream, contentType);
         return this;
+    }
+
+    private class HcListenerChain extends HcListener {
+        private final List<FutureCallback<HttpResponse>> syncTasks = new ArrayList<FutureCallback<HttpResponse>>();
+        private final List<FutureCallback<HttpResponse>> asyncTasks = new ArrayList<FutureCallback<HttpResponse>>();
+
+
+        public void addSync(FutureCallback<HttpResponse> listener) {
+            syncTasks.add(listener);
+        }
+
+        public void addAsync(FutureCallback<HttpResponse> listener) {
+            asyncTasks.add(listener);
+        }
+
+        @Override
+        public void completed(final HttpResponse result) {
+            for (FutureCallback<HttpResponse> hcListener : syncTasks) {
+                hcListener.completed(result);
+            }
+            for (final FutureCallback<HttpResponse> hcListener : asyncTasks) {
+                getExecutor().execute(new Runnable() {
+                    public void run() {
+                        hcListener.completed(result);
+                    }
+                });
+            }
+
+        }
+
+        @Override
+        public void failed(final Exception ex) {
+            for (FutureCallback<HttpResponse> hcListener : syncTasks) {
+                hcListener.failed(ex);
+            }
+            for (final FutureCallback<HttpResponse> hcListener : asyncTasks) {
+                getExecutor().execute(new Runnable() {
+                    public void run() {
+                        hcListener.failed(ex);
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void cancelled() {
+            for (FutureCallback<HttpResponse> hcListener : syncTasks) {
+                hcListener.cancelled();
+            }
+            for (final FutureCallback<HttpResponse> hcListener : asyncTasks) {
+                getExecutor().execute(new Runnable() {
+                    public void run() {
+                        hcListener.cancelled();
+                    }
+                });
+            }
+        }
+
+        private ExecutorService getExecutor() {
+            return hacExecutor.getEXECUTOR_SERVICE();
+        }
     }
 }

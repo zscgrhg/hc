@@ -19,10 +19,30 @@ import java.nio.charset.CodingErrorAction;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class HcExecutor {
-    public static final CloseableHttpAsyncClient HTTP_ASYNC_CLIENT = custom();
-    public static final ExecutorService EXECUTOR_SERVICE= Executors.newFixedThreadPool(4);
-    public static CloseableHttpAsyncClient custom() {
+public class SharedHacCustom implements HacExecutorCustom {
+    public static volatile CloseableHttpAsyncClient hac;
+    public static volatile ExecutorService service;
+
+    public CloseableHttpAsyncClient createHac() {
+        return custom();
+    }
+
+    public ExecutorService createExecutorService() {
+        return simpleExecutor();
+    }
+
+    private synchronized static ExecutorService simpleExecutor() {
+        if (service != null) {
+            return service;
+        }
+        service = Executors.newFixedThreadPool(8);
+        return service;
+    }
+
+    private synchronized static CloseableHttpAsyncClient custom() {
+        if (hac != null) {
+            return hac;
+        }
         NHttpConnectionFactory<ManagedNHttpClientConnection> connFactory = new ManagedNHttpClientConnectionFactory();
 
 
@@ -60,13 +80,13 @@ public class HcExecutor {
                 .build();
 
         // Create an HttpClient with the given custom dependencies and configuration.
-        CloseableHttpAsyncClient httpclient = HttpAsyncClients
+        hac = HttpAsyncClients
                 .custom()
                 .setConnectionManager(connManager)
                 .setDefaultRequestConfig(defaultRequestConfig)
                 .build();
-        httpclient.start();
-        return httpclient;
+        hac.start();
+        return hac;
     }
 
     private static ConnectingIOReactor ioReactor() {

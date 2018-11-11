@@ -5,11 +5,11 @@
         <file>${user.dir}/mc.log</file>
         <rollingPolicy class="shade.ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>mc.%d{yyyy-MM-dd-HH-mm}.log.zip</fileNamePattern>
+            <fileNamePattern>mc.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
 
             <!-- keep 30 days' worth of history capped at 3GB total size -->
             <maxHistory>30</maxHistory>
-            <totalSizeCap>100KB</totalSizeCap>
+            <totalSizeCap>500MB</totalSizeCap>
 
         </rollingPolicy>
 
