@@ -10,6 +10,7 @@ import org.apache.http.impl.nio.conn.ManagedNHttpClientConnectionFactory;
 import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
 import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
 import org.apache.http.impl.nio.reactor.IOReactorConfig;
+import org.apache.http.nio.client.util.HttpAsyncClientUtils;
 import org.apache.http.nio.conn.ManagedNHttpClientConnection;
 import org.apache.http.nio.conn.NHttpConnectionFactory;
 import org.apache.http.nio.reactor.ConnectingIOReactor;
@@ -103,5 +104,21 @@ public class SharedHacCustom implements HacExecutorCustom {
         } catch (IOReactorException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    static {
+        Runtime
+                .getRuntime()
+                .addShutdownHook(new Thread(new Runnable() {
+                    public void run() {
+                        if (hac != null && hac.isRunning()) {
+                            HttpAsyncClientUtils.closeQuietly(hac);
+                        }
+                        if (service != null && !service.isShutdown()) {
+
+                            service.shutdown();
+                        }
+                    }
+                }));
     }
 }
