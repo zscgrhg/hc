@@ -1,7 +1,9 @@
 package com.example.hc.core;
 
 import org.apache.http.client.fluent.HcRequest;
+import org.apache.http.nio.client.util.HttpAsyncClientUtils;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
@@ -15,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
-public class VirtualServer {
+public class VirtualServer implements Closeable {
     private final String name;
     private final DiscoveryClient discoveryClient;
     private final LoadBlancer loadBlancer;
@@ -23,7 +25,7 @@ public class VirtualServer {
 
     private volatile List<RealServer> realRealServers = Collections.emptyList();
 
-    public VirtualServer(String name, DiscoveryClient discoveryClient, LoadBlancer loadBlancer, HacExecutor hacExecutor) {
+    VirtualServer(String name, DiscoveryClient discoveryClient, LoadBlancer loadBlancer, HacExecutor hacExecutor) {
         this.name = name;
         this.discoveryClient = discoveryClient;
         this.loadBlancer = loadBlancer;
@@ -44,6 +46,13 @@ public class VirtualServer {
 
     public void remove(RealServer realServer) {
         realRealServers.remove(realServer);
+    }
+
+    public void close() {
+        HttpAsyncClientUtils.closeQuietly(hacExecutor.hac);
+        hacExecutor
+                .getEXECUTOR_SERVICE()
+                .shutdown();
     }
 
 
