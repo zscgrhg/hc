@@ -1,6 +1,7 @@
 package com.example.hc.core;
 
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -10,10 +11,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
 public class VirtualServerKeeper {
+    public static final Logger LOGGER = LoggerBuddy.of(VirtualServerKeeper.class);
     private static final Map<String, VirtualServer> SERVERS = new ConcurrentHashMap<String, VirtualServer>();
     private static final Set<CloseableObject> closeables = new HashSet<CloseableObject>();
 
-    public synchronized static VirtualServer create(String name,
+    public synchronized static VirtualServer create(final String name,
                                                     DiscoveryClient discoveryClient,
                                                     LoadBlancer loadBlancer,
                                                     HacExecutorCustom haec) {
@@ -28,6 +30,7 @@ public class VirtualServerKeeper {
                 }
 
                 public void close() throws IOException {
+                    LOGGER.debug("close hac of " + name);
                     hac.close();
                 }
             });
@@ -37,6 +40,7 @@ public class VirtualServerKeeper {
                 }
 
                 public void close() throws IOException {
+                    LOGGER.debug("close executor of " + name);
                     executorService.shutdown();
                 }
             });
