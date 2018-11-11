@@ -54,11 +54,11 @@ public class VirtualServerKeeper {
                 new SharedHacCustom());
     }
 
-    private static void close(CloseableObject closeable) {
+    private static void tryClose(CloseableObject closeable) {
         if (closeable.isOpen()) {
             try {
                 closeable.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
 
             }
         }
@@ -70,7 +70,7 @@ public class VirtualServerKeeper {
                 .addShutdownHook(new Thread(new Runnable() {
                     public void run() {
                         for (CloseableObject closeable : closeables) {
-                            close(closeable);
+                            tryClose(closeable);
                         }
                     }
                 }));
