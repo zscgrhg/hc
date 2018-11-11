@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 
 public class LoggerBuddy {
     public static final LoggerContext LOGGER_CONTEXT = createFromClasspathResource();
-    public static final String CONFIG_NAME = "mc-debug.xml";
+    public static final String CONFIG_NAME = "mc.xml";
 
     public static Logger of(Class<?> clazz) {
         return LOGGER_CONTEXT.getLogger(clazz);

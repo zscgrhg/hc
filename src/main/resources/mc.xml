@@ -1,6 +1,22 @@
 <configuration>
     <contextName>mc</contextName>
     <shutdownHook/>
+    <appender name="RFILE" class="shade.ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${user.dir}/mc.log</file>
+        <rollingPolicy class="shade.ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>mc.%d{yyyy-MM-dd-HH-mm}.log.zip</fileNamePattern>
+
+            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100KB</totalSizeCap>
+
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
     <appender name="FILE" class="shade.ch.qos.logback.core.FileAppender">
         <file>${user.dir}/mc.log</file>
 
@@ -16,9 +32,14 @@
             <pattern>%contextName %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+
+    <appender name="ASYNC" class="shade.ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="RFILE" />
+    </appender>
+
     <!--<logger name="com.example.hc" level="off"/>-->
     <root level="debug">
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="ASYNC"/>
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
