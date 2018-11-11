@@ -3,15 +3,15 @@ package com.example.hc.core;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 
 public class VirtualServerKeeper {
     private static final Map<String, VirtualServer> SERVERS = new ConcurrentHashMap<String, VirtualServer>();
-    private static final List<CloseableObject> closeables = new CopyOnWriteArrayList<CloseableObject>();
+    private static final Set<CloseableObject> closeables = new HashSet<CloseableObject>();
 
     public synchronized static VirtualServer create(String name,
                                                     DiscoveryClient discoveryClient,
