@@ -5,8 +5,8 @@ import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import java.util.concurrent.ExecutorService;
 
 public class HacExecutor {
-    public final CloseableHttpAsyncClient hac;
-    public final ExecutorService EXECUTOR_SERVICE;
+    private final CloseableHttpAsyncClient hac;
+    private final ExecutorService EXECUTOR_SERVICE;
 
     public HacExecutor(HacExecutorCustom factory) {
         this.hac = factory.createHac();
@@ -22,7 +22,8 @@ public class HacExecutor {
         return hac;
     }
 
-    public ExecutorService getEXECUTOR_SERVICE() {
-        return EXECUTOR_SERVICE;
+
+    public void execute(Runnable command) {
+        EXECUTOR_SERVICE.execute(command);
     }
 }

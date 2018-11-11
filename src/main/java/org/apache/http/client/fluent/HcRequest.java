@@ -16,7 +16,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 public class HcRequest extends Request {
@@ -67,11 +66,6 @@ public class HcRequest extends Request {
         return this;
     }
 
-    public void call(Runnable runnable) {
-        hacExecutor
-                .getEXECUTOR_SERVICE()
-                .execute(runnable);
-    }
 
     @Override
     public HcRequest addHeader(Header header) {
@@ -296,7 +290,7 @@ public class HcRequest extends Request {
                 hcListener.completed(result);
             }
             for (final FutureCallback<HttpResponse> hcListener : asyncTasks) {
-                getExecutor().execute(new Runnable() {
+                hacExecutor.execute(new Runnable() {
                     public void run() {
                         hcListener.completed(result);
                     }
@@ -311,7 +305,7 @@ public class HcRequest extends Request {
                 hcListener.failed(ex);
             }
             for (final FutureCallback<HttpResponse> hcListener : asyncTasks) {
-                getExecutor().execute(new Runnable() {
+                hacExecutor.execute(new Runnable() {
                     public void run() {
                         hcListener.failed(ex);
                     }
@@ -325,7 +319,7 @@ public class HcRequest extends Request {
                 hcListener.cancelled();
             }
             for (final FutureCallback<HttpResponse> hcListener : asyncTasks) {
-                getExecutor().execute(new Runnable() {
+                hacExecutor.execute(new Runnable() {
                     public void run() {
                         hcListener.cancelled();
                     }
@@ -333,8 +327,5 @@ public class HcRequest extends Request {
             }
         }
 
-        private ExecutorService getExecutor() {
-            return hacExecutor.getEXECUTOR_SERVICE();
-        }
     }
 }
