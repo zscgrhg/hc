@@ -65,6 +65,7 @@ public class HcExecutor {
                 .setConnectionManager(connManager)
                 .setDefaultRequestConfig(defaultRequestConfig)
                 .build();
+        httpclient.start();
         return httpclient;
     }
 

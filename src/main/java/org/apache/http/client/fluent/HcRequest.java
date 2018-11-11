@@ -2,10 +2,12 @@ package org.apache.http.client.fluent;
 
 import com.example.hc.core.HcExecutor;
 import com.example.hc.core.HcListenerChain;
+import com.example.hc.core.LoggerBuddy;
 import com.example.hc.core.SyncHcListener;
 import org.apache.http.*;
 import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.entity.ContentType;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.InputStream;
@@ -15,6 +17,7 @@ import java.util.Date;
 import java.util.concurrent.Future;
 
 public class HcRequest extends Request {
+    final static Logger LOGGER = LoggerBuddy.of(HcRequest.class);
     private final InternalHttpRequest internalHttpRequest;
     private final HcListenerChain chain = new HcListenerChain();
 
@@ -41,14 +44,17 @@ public class HcRequest extends Request {
     }
 
     public Future<HttpResponse> aexec() {
+        LOGGER.debug(internalHttpRequest
+                .getURI()
+                .toString());
         Future<HttpResponse> execute = HcExecutor.HTTP_ASYNC_CLIENT.execute(internalHttpRequest, chain);
         return execute;
     }
 
-    public HcRequest addListener(FutureCallback<HttpResponse> listener){
-        if(listener instanceof SyncHcListener){
+    public HcRequest addListener(FutureCallback<HttpResponse> listener) {
+        if (listener instanceof SyncHcListener) {
             chain.addSync(listener);
-        }else {
+        } else {
             chain.addAsync(listener);
         }
         return this;

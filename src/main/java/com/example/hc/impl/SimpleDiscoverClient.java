@@ -15,10 +15,4 @@ public class SimpleDiscoverClient implements DiscoveryClient {
     public List<RealServer> seek(String name) {
         return null;
     }
-
-    public static void main(String[] args) {
-        LOGGER.debug("OOPS");
-    }
-
-
 }

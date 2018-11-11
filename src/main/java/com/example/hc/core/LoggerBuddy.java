@@ -3,12 +3,11 @@ package com.example.hc.core;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import com.example.hc.impl.SimpleDiscoverClient;
 import org.slf4j.Logger;
 
 public class LoggerBuddy {
     public static final LoggerContext LOGGER_CONTEXT = createFromClasspathResource();
-    public static final String CONFIG_NAME = "hc.xml";
+    public static final String CONFIG_NAME = "mc-debug.xml";
 
     public static Logger of(Class<?> clazz) {
         return LOGGER_CONTEXT.getLogger(clazz);
@@ -21,7 +20,7 @@ public class LoggerBuddy {
             JoranConfigurator configurator = new JoranConfigurator();
 
             configurator.setContext(context);
-            configurator.doConfigure(SimpleDiscoverClient.class
+            configurator.doConfigure(LoggerBuddy.class
                     .getClassLoader()
                     .getResourceAsStream(CONFIG_NAME));
         } catch (JoranException je) {

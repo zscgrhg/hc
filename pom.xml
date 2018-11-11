@@ -77,7 +77,6 @@
                     </relocations>
                     <artifactSet>
                         <excludes>
-                            <exclude>commons-logging:commons-logging</exclude>
                             <exclude>org.projectlombok:lombok</exclude>
                         </excludes>
                     </artifactSet>

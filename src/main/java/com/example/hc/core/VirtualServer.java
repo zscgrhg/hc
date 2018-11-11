@@ -1,5 +1,6 @@
 package com.example.hc.core;
 
+import lombok.Builder;
 import org.apache.http.client.fluent.HcRequest;
 
 import java.io.IOException;
@@ -8,17 +9,20 @@ import java.net.ConnectException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-
+@Builder
 public class VirtualServer {
     private String name;
     private DiscoveryClient discoveryClient;
     private LoadBlancer loadBlancer;
-    private List<RealServer> realRealServers;
+    @Builder.Default
+    private List<RealServer> realRealServers= Collections.emptyList();
+
 
     public void initRealServers() {
         refreshRealServers();
