@@ -8,10 +8,6 @@ public class HacExecutor {
     private final CloseableHttpAsyncClient hac;
     private final ExecutorService EXECUTOR_SERVICE;
 
-    public HacExecutor(HacExecutorCustom factory) {
-        this.hac = factory.createHac();
-        this.EXECUTOR_SERVICE = factory.createExecutorService();
-    }
 
     public HacExecutor(CloseableHttpAsyncClient http_async_client, ExecutorService executor_service) {
         hac = http_async_client;
